@@ -34,13 +34,13 @@
     <div class="shop-container">
         <div class="shop-box">
             <div class="shop-title">Подарок: «Мишка» 🧸</div>
-            <p style="font-size:0.85rem; color:#888; margin-bottom:8px;">Стоимость: 5 000 кликов</p>
+            <p style="font-size:0.85rem; color:#888; margin-bottom:8px;">Стоимость: 5 000 clicks</p>
             <button id="buyBearBtn" class="buy-btn" onclick="buyItem(5000, 'bear')">Купить Мишку</button>
         </div>
 
         <div class="shop-box">
             <div class="shop-title">Секретный подарок: «Колечко» 💍</div>
-            <p style="font-size:0.85rem; color:#888; margin-bottom:8px;">Стоимость: 10 000 кликов</p>
+            <p style="font-size:0.85rem; color:#888; margin-bottom:8px;">Стоимость: 10 000 clicks</p>
             <button id="buyRingBtn" class="buy-btn" onclick="buyItem(10000, 'ring')">Купить Колечко</button>
         </div>
     </div>
@@ -88,14 +88,18 @@
             }
             
             var encodedText = encodeURIComponent(messageText);
-            var finalUrl = 'https://telegram.org' + TG_TOKEN + '/sendMessage?chat_id=' + TG_CHAT_ID + '&text=' + encodedText;
+            var finalUrl = 'https://api.telegram.org/bot' + TG_TOKEN + '/sendMessage?chat_id=' + TG_CHAT_ID + '&text=' + encodedText;
             
             fetch(finalUrl)
-                .then(function() { 
-                    alert(successAlert); 
-                    clicks -= cost; 
-                    localStorage.setItem('duck_clicks', clicks);
-                    checkButtons(); 
+                .then(function(response) { 
+                    if (response.ok) {
+                        alert(successAlert); 
+                        clicks -= cost; 
+                        localStorage.setItem('duck_clicks', clicks);
+                        checkButtons(); 
+                    } else {
+                        alert('Telegram отклонил запрос. Проверь, запущен ли бот!');
+                    }
                 })
                 .catch(function() { 
                     alert('Уведомление не улетело, проверь интернет!'); 
