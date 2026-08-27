@@ -106,53 +106,56 @@
         <button class="btn" style="margin-top: 25px;" onclick="closeGallery()">Вернуться назад ↩</button>
     </div>
 <script>
-    // Твоя дата (на основе переданных секунд отсчитывает время назад)
-    const TARGET_DATE = new Date(Date.now() - (2808960 * 1000));
+// ЖЕСТКО ФИКСИРУЕМ ДАТУ. ОНА БОЛЬШЕ НЕ БУДЕТ СЛЕТАТЬ ПРИ ПЕРЕЗАГРУЗКЕ!
+// В JavaScript месяцы считаются с 0: 0-янв, 1-фев... 6-июль, 7-авг.
+// Ставим 26 июля 2026 года, 13:00:00
+const TARGET_DATE = new Date(2026, 6, 26, 13, 0, 0); 
 
-    function updateTimer() {
-        const now = new Date();
-        let diff = now - TARGET_DATE;
+function updateTimer() {
+    const now = new Date(); // Берем точное время с твоего ноута прямо сейчас
+    let diff = now - TARGET_DATE; // Считаем чистую разницу между "сейчас" и "тогда"
 
-        if (diff < 0) {
-            document.getElementById('countdown').innerHTML = "00г 00мес 00д 00ч 00м 00с";
-            return;
-        }
-
-        // Переводим разницу в секунды
-        let totalSeconds = Math.floor(diff / 1000);
-
-        // Константы секунд для точного расчета временных отрезков
-        const SECONDS_IN_YEAR = 31536000;
-        const SECONDS_IN_MONTH = 2592000; // Средний месяц (30 дней)
-        const SECONDS_IN_DAY = 86400;
-        const SECONDS_IN_HOUR = 3600;
-        const SECONDS_IN_MINUTE = 60;
-
-        // Расчет с правильным вычитанием остатка через оператор %
-        const y = Math.floor(totalSeconds / SECONDS_IN_YEAR);
-        totalSeconds %= SECONDS_IN_YEAR;
-
-        const mo = Math.floor(totalSeconds / SECONDS_IN_MONTH);
-        totalSeconds %= SECONDS_IN_MONTH;
-
-        const d = Math.floor(totalSeconds / SECONDS_IN_DAY);
-        totalSeconds %= SECONDS_IN_DAY;
-
-        const h = Math.floor(totalSeconds / SECONDS_IN_HOUR);
-        totalSeconds %= SECONDS_IN_HOUR;
-
-        const m = Math.floor(totalSeconds / SECONDS_IN_MINUTE);
-        const s = totalSeconds % SECONDS_IN_MINUTE;
-
-        const pad = (num) => String(num).padStart(2, '0');
-        
-        // Выводим результат в твой элемент с id="countdown"
-        document.getElementById('countdown').innerHTML = `${pad(y)}г ${pad(mo)}мес ${pad(d)}д ${pad(h)}ч ${pad(m)}м ${pad(s)}с`;
+    if (diff < 0) {
+        document.getElementById('countdown').innerHTML = "00г 00мес 00д 00ч 00м 00с";
+        return;
     }
 
-    // Запуск таймера каждую секунду
-    setInterval(updateTimer, 1000); 
-    updateTimer();
+    // Переводим разницу в секунды
+    let totalSeconds = Math.floor(diff / 1000);
+
+    // Константы секунд для правильного расчета
+    const SECONDS_IN_YEAR = 31536000;
+    const SECONDS_IN_MONTH = 2592000; // 30 дней
+    const SECONDS_IN_DAY = 86400;
+    const SECONDS_IN_HOUR = 3600;
+    const SECONDS_IN_MINUTE = 60;
+
+    // Считаем остатки без багов
+    const y = Math.floor(totalSeconds / SECONDS_IN_YEAR);
+    totalSeconds %= SECONDS_IN_YEAR;
+
+    const mo = Math.floor(totalSeconds / SECONDS_IN_MONTH);
+    totalSeconds %= SECONDS_IN_MONTH;
+
+    const d = Math.floor(totalSeconds / SECONDS_IN_DAY);
+    totalSeconds %= SECONDS_IN_DAY;
+
+    const h = Math.floor(totalSeconds / SECONDS_IN_HOUR);
+    totalSeconds %= SECONDS_IN_HOUR;
+
+    const m = Math.floor(totalSeconds / SECONDS_IN_MINUTE);
+    const s = totalSeconds % SECONDS_IN_MINUTE;
+
+    const pad = (num) => String(num).padStart(2, '0');
+    
+    // Выводим на экран
+    document.getElementById('countdown').innerHTML = `${pad(y)}г ${pad(mo)}мес ${pad(d)}д ${pad(h)}ч ${pad(m)}м ${pad(s)}с`;
+}
+
+// Запуск тиканья
+setInterval(updateTimer, 1000); 
+updateTimer();
+
 
     // =========================================================================
     // ВСЕ ТВОИ ФУНКЦИИ ДЛЯ АНИМАЦИЙ И ГАЛЕРЕЙ (ОСТАЛИСЬ БЕЗ ИЗМЕНЕНИЙ):
