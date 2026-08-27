@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Для Моей Любимой</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Comfortaa', 'Segoe UI', cursive, sans-serif; background: linear-gradient(135deg, #ffeef2 0%, #ffd6e0 100%); color: #4a4a4a; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; overflow-x: hidden; padding: 20px; }
+        .timer-container { text-align: center; margin-bottom: 35px; padding: 25px 40px; border: 3px solid #ff7597; border-radius: 25px; background: rgba(255, 255, 255, 0.85); box-shadow: 0 10px 30px rgba(255, 117, 151, 0.25); position: relative; }
+        .timer-container::before, .timer-container::after { content: '🌸'; position: absolute; font-size: 1.5rem; top: -15px; }
+        .timer-container::before { left: 20px; } .timer-container::after { right: 20px; }
+        .timer-title { font-size: 1.3rem; color: #d1496c; margin-bottom: 15px; font-weight: bold; letter-spacing: 1px; }
+        .countdown { font-size: 2.3rem; font-weight: bold; color: #ff3366; text-shadow: 1px 1px 2px rgba(255, 51, 102, 0.2); font-family: monospace; }
+        .cat-button-container { margin-bottom: 35px; }
+        .cat-button { width: 160px; height: 160px; border-radius: 50%; border: 4px solid #ff7597; cursor: pointer; object-fit: cover; transition: all 0.4s ease; box-shadow: 0 8px 20px rgba(255, 117, 151, 0.3); background-color: #fff; }
+        .cat-button:hover { transform: scale(1.12); box-shadow: 0 0 30px rgba(255, 51, 102, 0.6); }
+        .controls { display: flex; gap: 20px; flex-wrap: wrap; justify-content: center; margin-bottom: 20px; }
+        .btn { background: #fff; color: #ff4d73; border: 2px solid #ff8fab; padding: 14px 28px; font-size: 1.05rem; border-radius: 50px; cursor: pointer; transition: all 0.3s ease; font-weight: bold; box-shadow: 0 5px 15px rgba(255, 143, 171, 0.2); display: flex; align-items: center; gap: 8px; }
+        .btn:hover { background: linear-gradient(135deg, #ff7597 0%, #ff4d73 100%); color: #ffffff; box-shadow: 0 8px 20px rgba(255, 77, 115, 0.4); transform: translateY(-3px); border-color: #ff4d73; }
+        .iframe-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(255, 238, 242, 0.95); z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; }
+        .iframe-wrapper { position: relative; width: 92%; height: 78%; max-width: 950px; background: #fff; border: 4px solid #ff8fab; border-radius: 24px; overflow: hidden; box-shadow: 0 15px 40px rgba(255, 143, 171, 0.4); }
+        iframe { width: 100%; height: 100%; border: none; }
+        .close-iframe { margin-top: 20px; background: linear-gradient(135deg, #ff7597 0%, #ff4d73 100%); color: white; border: none; padding: 12px 35px; font-size: 1.1rem; border-radius: 50px; cursor: pointer; font-weight: bold; box-shadow: 0 5px 15px rgba(255, 77, 115, 0.3); transition: all 0.3s ease; }
+        .gallery-container { display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(255, 245, 247, 0.98); z-index: 9998; flex-direction: column; align-items: center; justify-content: center; }
+        .slider-wrapper { position: relative; width: 85%; max-width: 650px; height: 450px; background: #fff; padding: 20px; border-radius: 24px; border: 3px solid #ff8fab; box-shadow: 0 15px 35px rgba(255, 143, 171, 0.3); overflow: hidden; display: flex; align-items: center; justify-content: center; }
+        .slide-item, .cat-slide-item { position: absolute; width: calc(100% - 40px); height: calc(100% - 40px); object-fit: contain; border-radius: 14px; display: none !important; }
+        .slide-item.active, .cat-slide-item.active { display: block !important; }
+        .slider-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255, 238, 242, 0.9); color: #ff4d73; border: 2px solid #ff8fab; width: 45px; height: 45px; font-size: 1.3rem; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 20; transition: all 0.2s; }
+        .slider-btn:hover { background: #ff4d73; color: white; border-color: #ff4d73; }
+        .prev { left: 25px; } .next { right: 25px; }
+        @media (max-width: 600px) { .countdown { font-size: 1.6rem; } .timer-container { padding: 15px 20px; } .slider-wrapper { height: 350px; width: 95%; } .prev { left: 10px; } .next { right: 10px; } }
+                /* Стили для уточки в углу */
+        .corner-duck {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 2px solid #ff8fab;
+            cursor: pointer;
+            object-fit: cover;
+            box-shadow: 0 4px 10px rgba(255, 143, 171, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            z-index: 1000; /* Чтобы она была поверх всего */
+        }
+        .corner-duck:hover {
+            transform: scale(1.1) rotate(10deg); /* При наведении чуть увеличится и наклонится */
+            box-shadow: 0 0 15px rgba(255, 51, 102, 0.5);
+        }
+        /* Сдвигаем на мобилках, чтобы не мешала */
+        @media (max-width: 600px) {
+            .corner-duck { width: 50px; height: 50px; top: 10px; left: 10px; }
+        }
+
+    </style>
+    <link href="https://googleapis.com" rel="stylesheet">
+</head>
+<body>
+    <!-- Маленькая кнопка-уточка в левом верхнем углу -->
+<img src="duck.jpg" class="corner-duck" onclick="location.href='clicker.html'" alt="Уточка" title="Кликни меня! 🐥" onerror="this.src='https://unsplash.com'">
+
+    <div class="timer-container">
+        <div class="timer-title">Мы вместе уже 💕</div>
+        <div id="countdown" class="countdown">00г 00мес 00д 00ч 00м 00с</div>
+    </div>
+    <div class="cat-button-container">
+        <img src="kitten.jpg" id="catBtn" class="cat-button" alt="Котёнок" onclick="openCatGallery()" onerror="this.src='https://unsplash.com'">
+    </div>
+    <div class="controls">
+        <button class="btn" onclick="openAnimation('https://maxsondey-cmyk.github.io/some-staff/')">✨ Анимация 1</button>
+        <button class="btn" onclick="openAnimation('https://maxsondey-cmyk.github.io/old-staff/')">🌸 Анимация 2</button>
+        <button class="btn" onclick="openGallery()">📸 Воспоминания</button>
+
+    </div>
+    <div id="iframeContainer" class="iframe-container">
+        <div class="iframe-wrapper"><iframe id="animFrame" src=""></iframe></div>
+        <button class="close-iframe" onclick="closeAnimation()">💖 Закрыть анимацию</button>
+    </div>
+    <div id="catGalleryContainer" class="gallery-container">
+        <div class="slider-wrapper">
+            <button class="slider-btn prev" onclick="changeCatSlide(-1)">&#10094;</button>
+            <img src="cat1.jpg" class="cat-slide-item active">
+            <img src="cat2.jpg" class="cat-slide-item">
+            <img src="cat3.jpg" class="cat-slide-item">
+            <button class="slider-btn next" onclick="changeCatSlide(1)">&#10095;</button>
+        </div>
+        <button class="btn" style="margin-top: 25px;" onclick="closeCatGallery()">Закрыть котиков 🐾</button>
+    </div>
+    <div id="galleryContainer" class="gallery-container">
+        <div class="slider-wrapper">
+            <button class="slider-btn prev" onclick="changeSlide(-1)">&#10094;</button>
+            <img src="photo1.JPG" class="slide-item active">
+            <img src="photo2.JPG" class="slide-item">
+            <img src="photo3.JPG" class="slide-item">
+            <img src="photo4.JPG" class="slide-item">
+            <video src="photo5.MP4" class="slide-item" controls></video>
+            <img src="photo6.JPG" class="slide-item">
+            <video src="photo7.MP4" class="slide-item" controls></video>
+            <img src="photo8.JPG" class="slide-item">
+            <img src="photo9.JPG" class="slide-item">
+            <img src="photo10.JPG" class="slide-item">
+            <button class="slider-btn next" onclick="changeSlide(1)">&#10095;</button>
+        </div>
+        <button class="btn" style="margin-top: 25px;" onclick="closeGallery()">Вернуться назад ↩</button>
+    </div>
+    <script>
+        const TARGET_DATE = new Date(Date.now() - (2808960 * 1000));
+        function updateTimer() {
+            const now = new Date(); let diff = Math.abs(now - TARGET_DATE);
+            const y = Math.floor(diff / 31557600000); diff %= 31557600000;
+            const mo = Math.floor(diff / 2629746000); diff %= 2629746000;
+            const d = Math.floor(diff / 86400000); diff %= 86400000;
+            const h = Math.floor(diff / 3600000); diff %= 3600000;
+            const m = Math.floor(diff / 60000); diff %= 60000;
+            const s = Math.floor(diff / 1000);
+            const pad = (num) => String(num).padStart(2, '0');
+            document.getElementById('countdown').innerHTML = `${pad(y)}г ${pad(mo)}мес ${pad(d)}д ${pad(h)}ч ${pad(m)}м ${pad(s)}с`;
+        }
+        setInterval(updateTimer, 1000); updateTimer();
+        const iframeContainer = document.getElementById('iframeContainer'); const animFrame = document.getElementById('animFrame');
+        function openAnimation(url) { animFrame.src = url; iframeContainer.style.display = 'flex'; }
+        function closeAnimation() { iframeContainer.style.display = 'none'; animFrame.src = ''; }
+        let currentSlide = 0; const slides = document.querySelectorAll('.slide-item');
+        function openGallery() { document.getElementById('galleryContainer').style.display = 'flex'; }
+        function closeGallery() { document.getElementById('galleryContainer').style.display = 'none'; slides.forEach(s => { if(s.tagName==='VIDEO') s.pause(); }); }
+        function changeSlide(dir) { if(slides[currentSlide].tagName==='VIDEO') slides[currentSlide].pause(); slides[currentSlide].classList.remove('active'); currentSlide = (currentSlide + dir + slides.length) % slides.length; slides[currentSlide].classList.add('active'); }
+        let currentCatSlide = 0; const catSlides = document.querySelectorAll('.cat-slide-item');
+        function openCatGallery() { document.getElementById('catGalleryContainer').style.display = 'flex'; }
+        function closeCatGallery() { document.getElementById('catGalleryContainer').style.display = 'none'; }
+        function changeCatSlide(dir) { catSlides[currentCatSlide].classList.remove('active'); currentCatSlide = (currentCatSlide + dir + catSlides.length) % catSlides.length; catSlides[currentCatSlide].classList.add('active'); }
+    </script>
+</body>
+</html>

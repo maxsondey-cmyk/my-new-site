@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Утиный Кликер 🐥</title>
+    <link href="https://googleapis.com" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Comfortaa', cursive, sans-serif; background: linear-gradient(135deg, #ffeef2 0%, #ffd6e0 100%); color: #4a4a4a; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
+        .score-board { font-size: 2.2rem; font-weight: bold; color: #ff3366; margin-bottom: 15px; text-align: center; }
+        .duck-btn { width: 200px; height: 200px; cursor: pointer; transition: transform 0.1s ease; user-select: none; -webkit-user-drag: none; margin: 10px 0; }
+        .duck-btn:active { transform: scale(0.9); }
+        
+        .shop-container { display: flex; flex-direction: column; gap: 15px; width: 90%; max-width: 350px; margin-top: 20px; }
+        .shop-box { padding: 15px; border: 2px dashed #ff8fab; border-radius: 20px; background: #fff; text-align: center; box-shadow: 0 10px 25px rgba(255, 143, 171, 0.15); }
+        .shop-title { font-weight: bold; font-size: 1.1rem; color: #d1496c; margin-bottom: 3px; }
+        
+        .buy-btn { background: #ccc; color: #fff; border: none; padding: 10px 25px; border-radius: 50px; font-size: 1rem; font-weight: bold; cursor: not-allowed; transition: all 0.3s ease; width: 100%; margin-top: 5px; }
+        .buy-btn.available { background: linear-gradient(135deg, #ff7597 0%, #ff4d73 100%); cursor: pointer; box-shadow: 0 5px 15px rgba(255, 77, 115, 0.3); }
+        
+        .back-btn { margin-top: 30px; background: #fff; color: #ff4d73; border: 2px solid #ff8fab; padding: 10px 25px; border-radius: 50px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .back-btn:hover { background: #ff4d73; color: #fff; }
+    </style>
+</head>
+<body>
+
+    <div class="score-board">Монетки: <span id="score">0</span></div>
+    
+    <!-- Картинка утки -->
+    <img src="catnose.jpg" class="duck-btn" id="duck" onclick="clickDuck()" onerror="this.src='https://unsplash.com'">
+
+    <!-- МАГАЗИН ПОДАРКОВ -->
+    <div class="shop-container">
+        <div class="shop-box">
+            <div class="shop-title">Подарок: «Мишка» 🧸</div>
+            <p style="font-size:0.85rem; color:#888; margin-bottom:8px;">Стоимость: 5 000 кликов</p>
+            <button id="buyBearBtn" class="buy-btn" onclick="buyItem(5000, 'bear')">Купить Мишку</button>
+        </div>
+
+        <div class="shop-box">
+            <div class="shop-title">Секретный подарок: «Колечко» 💍</div>
+            <p style="font-size:0.85rem; color:#888; margin-bottom:8px;">Стоимость: 10 000 кликов</p>
+            <button id="buyRingBtn" class="buy-btn" onclick="buyItem(10000, 'ring')">Купить Колечко</button>
+        </div>
+    </div>
+
+    <button class="back-btn" onclick="location.href='index.html'">↩ Назад к таймеру</button>
+
+    <script>
+        let clicks = parseInt(localStorage.getItem('duck_clicks')) || 0;
+        
+        function checkButtons() {
+            document.getElementById('score').innerText = clicks;
+            
+            let bearBtn = document.getElementById('buyBearBtn');
+            if (clicks >= 5000) { bearBtn.classList.add('available'); } 
+            else { bearBtn.classList.remove('available'); }
+            
+            let ringBtn = document.getElementById('buyRingBtn');
+            if (clicks >= 10000) { ringBtn.classList.add('available'); } 
+            else { ringBtn.classList.remove('available'); }
+        }
+        
+        checkButtons();
+
+        function clickDuck() {
+            clicks++;
+            localStorage.setItem('duck_clicks', clicks);
+            checkButtons();
+        }
+
+        function buyItem(cost, itemType) {
+            if (clicks < cost) return;
+            
+            const TG_TOKEN = '8776990219:AAHCKijtuylJhKkO4bLZmfaSDRbjwTE-Inw';
+            const TG_CHAT_ID = '5677442551';
+            
+            let messageText = '';
+            let successAlert = '';
+            
+            if (itemType === 'bear') {
+                messageText = '🎉 Твоя девушка накопила 5000 кликов и купила Мишку! 🧸';
+                successAlert = 'Покупка совершена! Мишка успешно отправлен любимому! 🧸❤️';
+            } else if (itemType === 'ring') {
+                messageText = '💖 ВАУ! Твоя девушка накопила аж 10000 кликов и выбрала Колечко! 💍✨';
+                successAlert = 'Ого! Колечко заказано, уведомление уже летит к любимому! 💍💕';
+            }
+            
+            var finalUrl = 'api.telegram.org/bot' + TG_TOKEN + '/sendMessage?chat_id=' + TG_CHAT_ID + '&text=' + urlText;
+            
+            fetch(finalUrl)
+                .then(function() { 
+                    alert(successAlert); 
+                    clicks -= cost; 
+                    localStorage.setItem('duck_clicks', clicks);
+                    checkButtons(); 
+                })
+                .catch(function() { 
+                    alert('Уведомление не улетело, проверь интернет!'); 
+                });
+        }
+    </script>
+</body>
+</html>
