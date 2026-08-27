@@ -87,7 +87,8 @@
                 successAlert = 'Ого! Колечко заказано, уведомление уже летит к любимому! 💍💕';
             }
             
-            var finalUrl = 'api.telegram.org/bot' + TG_TOKEN + '/sendMessage?chat_id=' + TG_CHAT_ID + '&text=' + urlText;
+            var encodedText = encodeURIComponent(messageText);
+            var finalUrl = 'https://telegram.org' + TG_TOKEN + '/sendMessage?chat_id=' + TG_CHAT_ID + '&text=' + encodedText;
             
             fetch(finalUrl)
                 .then(function() { 
