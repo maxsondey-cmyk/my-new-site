@@ -25,14 +25,12 @@
 </head>
 <body>
 <!-- УТИЛЬНЫЙ МУЗЫКАЛЬНЫЙ ПЛЕЕР -->
-<div id="clickerPlayer" style="position: fixed; top: 15px; right: 15px; z-index: 1000; background: #fff; padding: 10px 15px; border-radius: 30px; display: flex; gap: 12px; align-items: center; box-shadow: 0 8px 20px rgba(255, 143, 171, 0.2); border: 2px dashed #ff8fab; font-family: 'Comfortaa', cursive, sans-serif;">
-    <span style="font-size: 0.85rem; font-weight: bold; color: #d1496c;">🎵 Музыка</span>
-    
-    <!-- Кнопка Назад (перемотка на начало) -->
-    <button onclick="restartMusic()" style="background: none; border: none; font-size: 1.1rem; cursor: pointer; padding: 0; transition: transform 0.1s;" onactive="this.style.transform='scale(0.8)'">⏪</button>
-    
-    <!-- Кнопка Пауза / Плей -->
-    <button onclick="togglePlayPause()" id="playPauseBtn" style="background: none; border: none; font-size: 1.1rem; cursor: pointer; padding: 0; transition: transform 0.1s;" onactive="this.style.transform='scale(0.8)'">⏸️</button>
+<!-- УТИЛЬНЫЙ МУЗЫКАЛЬНЫЙ ПЛЕЕР (ФИКС СЖАТИЯ САЙТА) -->
+<div id="clickerPlayer" style="position: absolute; top: 15px; right: 15px; z-index: 9999; background: #fff; padding: 10px 15px; border-radius: 30px; display: flex; gap: 12px; align-items: center; box-shadow: 0 8px 20px rgba(255, 143, 171, 0.2); border: 2px dashed #ff8fab; font-family: 'Comfortaa', cursive, sans-serif;">
+    <span id="trackName" style="font-size: 0.85rem; font-weight: bold; color: #d1496c; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">🎵 Загрузка...</span>
+    <button onclick="restartMusic()" style="background: none; border: none; font-size: 1.1rem; cursor: pointer; padding: 0;">⏪</button>
+    <button onclick="togglePlayPause()" id="playPauseBtn" style="background: none; border: none; font-size: 1.1rem; cursor: pointer; padding: 0;">⏸️</button>
+</div>
 
     <div class="score-board">Монетки: <span id="score">0</span></div>
     
@@ -129,7 +127,7 @@
     // Функция для выбора СЛУЧАЙНОГО номера трека (с защитой от повторений)
     function chooseRandomTrackNumber() {
         if (TOTAL_TRACKS <= 1) return 1;
-        
+         
         let nextTrack;
         do {
             nextTrack = Math.floor(Math.random() * TOTAL_TRACKS) + 1;
