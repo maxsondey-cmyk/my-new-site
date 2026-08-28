@@ -24,6 +24,15 @@
     </style>
 </head>
 <body>
+<!-- УТИЛЬНЫЙ МУЗЫКАЛЬНЫЙ ПЛЕЕР -->
+<div id="clickerPlayer" style="position: fixed; top: 15px; right: 15px; z-index: 1000; background: #fff; padding: 10px 15px; border-radius: 30px; display: flex; gap: 12px; align-items: center; box-shadow: 0 8px 20px rgba(255, 143, 171, 0.2); border: 2px dashed #ff8fab; font-family: 'Comfortaa', cursive, sans-serif;">
+    <span style="font-size: 0.85rem; font-weight: bold; color: #d1496c;">🎵 Музыка</span>
+    
+    <!-- Кнопка Назад (перемотка на начало) -->
+    <button onclick="restartMusic()" style="background: none; border: none; font-size: 1.1rem; cursor: pointer; padding: 0; transition: transform 0.1s;" onactive="this.style.transform='scale(0.8)'">⏪</button>
+    
+    <!-- Кнопка Пауза / Плей -->
+    <button onclick="togglePlayPause()" id="playPauseBtn" style="background: none; border: none; font-size: 1.1rem; cursor: pointer; padding: 0; transition: transform 0.1s;" onactive="this.style.transform='scale(0.8)'">⏸️</button>
 
     <div class="score-board">Монетки: <span id="score">0</span></div>
     
@@ -48,6 +57,7 @@
     <button class="back-btn" onclick="location.href='index.html'">↩ Назад к таймеру</button>
 
     <script>
+        
         let clicks = parseInt(localStorage.getItem('duck_clicks')) || 0;
         
         function checkButtons() {
@@ -105,6 +115,79 @@
                     alert('Уведомление не улетело, проверь интернет!'); 
                 });
         }
+    // =========================================================================
+    // УПРАВЛЕНИЕ ПЛЕЙЛИСТОМ В КЛИКЕРЕ (РАНДОМНЫЙ ВЫБОР + АВТОПЕРЕКЛЮЧЕНИЕ)
+    // =========================================================================
+
+    // 1. Укажи тут, сколько ВСЕГО песен ты закинул в папку music
+    const TOTAL_TRACKS = 2; // Если песен 5, просто замени 3 на 5
+
+    let currentTrackNumber = 0;
+    const playerAudio = new Audio();
+    playerAudio.loop = false; // Отключаем зацикливание одного трека
+
+    // Функция для выбора СЛУЧАЙНОГО номера трека (с защитой от повторений)
+    function chooseRandomTrackNumber() {
+        if (TOTAL_TRACKS <= 1) return 1;
+        
+        let nextTrack;
+        do {
+            nextTrack = Math.floor(Math.random() * TOTAL_TRACKS) + 1;
+        } while (nextTrack === currentTrackNumber); // Крутим цикл, пока не выпадет НОВАЯ песня
+        
+        return nextTrack;
+    }
+
+    // Загрузка случайного трека на старте
+    function initPlaylist() {
+        currentTrackNumber = chooseRandomTrackNumber();
+        playerAudio.src = `music/${currentTrackNumber}.mp3`;
+    }
+
+    function startMusicOnLoad() {
+        playerAudio.play().catch(err => { console.log("Ждем первого тапа для музыки..."); });
+    }
+
+    // Кнопка Пауза / Плей
+    function togglePlayPause() {
+        const btn = document.getElementById('playPauseBtn');
+        if (playerAudio.paused) { 
+            playerAudio.play(); 
+            btn.innerText = '⏸️'; 
+        } else { 
+            playerAudio.pause(); 
+            btn.innerText = '▶️'; 
+        }
+    }
+
+    // Кнопка "Назад" переключает на ДРУГОЙ случайный трек
+    function restartMusic() {
+        currentTrackNumber = chooseRandomTrackNumber();
+        playerAudio.src = `music/${currentTrackNumber}.mp3`;
+        playerAudio.play().catch(() => {});
+        document.getElementById('playPauseBtn').innerText = '⏸️';
+    }
+
+    // АВТОПЕРЕКЛЮЧЕНИЕ: когда песня полностью закончилась, сама включается СЛЕДУЮЩАЯ РАНДОМНАЯ
+    playerAudio.onended = function() {
+        currentTrackNumber = chooseRandomTrackNumber();
+        playerAudio.src = `music/${currentTrackNumber}.mp3`;
+        playerAudio.play().catch(() => {});
+        document.getElementById('playPauseBtn').innerText = '⏸️';
+    };
+
+    // Инициализация и запуск
+    initPlaylist();
+    startMusicOnLoad();
+
+    // Железный запуск музыки при самом первом клике по экрану
+    document.addEventListener('click', function() {
+        if (playerAudio.paused && playerAudio.currentTime === 0) {
+            playerAudio.play().catch(() => {});
+        document.getElementById('playPauseBtn').innerText = '⏸️';
+        }
+    }, { once: true });
+
     </script>
 </body>
 </html>
