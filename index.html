@@ -165,20 +165,93 @@ updateTimer();
 
     function openAnimation(url) { animFrame.src = url; iframeContainer.style.display = 'flex'; }
     function closeAnimation() { iframeContainer.style.display = 'none'; animFrame.src = ''; }
+        // =========================================================================
+        // ГАЛЕРЕЯ «ВОСПОМИНАНИЯ» (УМНЫЙ РАНДОМ ВПЕРЕД + ИСТОРИЯ НАЗАД)
+        // =========================================================================
+        let currentSlide = 0; 
+        const slides = document.querySelectorAll('.slide-item');
+        let galleryHistory = []; // Сюда код записывает историю просмотров
 
-    let currentSlide = 0; 
-    const slides = document.querySelectorAll('.slide-item');
+        function openGallery() { 
+            document.getElementById('galleryContainer').style.display = 'flex'; 
+            galleryHistory = []; // Очищаем историю при новом открытии
+        }
 
-    function openGallery() { document.getElementById('galleryContainer').style.display = 'flex'; }
-    function closeGallery() { document.getElementById('galleryContainer').style.display = 'none'; slides.forEach(s => { if(s.tagName==='VIDEO') s.pause(); }); }
-    function changeSlide(dir) { if(slides[currentSlide].tagName==='VIDEO') slides[currentSlide].pause(); slides[currentSlide].classList.remove('active'); currentSlide = (currentSlide + dir + slides.length) % slides.length; slides[currentSlide].classList.add('active'); }
+        function closeGallery() { 
+            document.getElementById('galleryContainer').style.display = 'none'; 
+            slides.forEach(s => { if(s.tagName === 'VIDEO') s.pause(); }); 
+        }
 
-    let currentCatSlide = 0; 
-    const catSlides = document.querySelectorAll('.cat-slide-item');
+        function changeSlide(dir) { 
+            if(slides[currentSlide].tagName === 'VIDEO') slides[currentSlide].pause(); 
+            slides[currentSlide].classList.remove('active'); 
 
-    function openCatGallery() { document.getElementById('catGalleryContainer').style.display = 'flex'; }
-    function closeCatGallery() { document.getElementById('catGalleryContainer').style.display = 'none'; }
-    function changeCatSlide(dir) { catSlides[currentCatSlide].classList.remove('active'); currentCatSlide = (currentCatSlide + dir + catSlides.length) % catSlides.length; catSlides[currentCatSlide].classList.add('active'); }
+            if (dir > 0) {
+                // НАЖАЛИ ВПЕРЕД (❯): запоминаем текущую фотку в историю и ищем случайную новую
+                galleryHistory.push(currentSlide);
+                
+                if (slides.length > 1) {
+                    let nextSlide;
+                    do {
+                        nextSlide = Math.floor(Math.random() * slides.length);
+                    } while (nextSlide === currentSlide);
+                    currentSlide = nextSlide;
+                }
+            } else {
+                // НАЖАЛИ НАЗАД (❮): достаем из истории предыдущую фотку
+                if (galleryHistory.length > 0) {
+                    currentSlide = galleryHistory.pop(); // Берем последний элемент из истории
+                } else {
+                    // Если истории еще нет (кликнули сразу назад), двигаемся по обычному кругу назад
+                    currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+                }
+            }
+
+            slides[currentSlide].classList.add('active'); 
+        }
+
+        // =========================================================================
+        // ГАЛЕРЕЯ «КОТИКИ» (УМНЫЙ РАНДОМ ВПЕРЕД + ИСТОРИЯ НАЗАД)
+        // =========================================================================
+        let currentCatSlide = 0; 
+        const catSlides = document.querySelectorAll('.cat-slide-item');
+        let catGalleryHistory = []; // История для котиков
+
+        function openCatGallery() { 
+            document.getElementById('catGalleryContainer').style.display = 'flex'; 
+            catGalleryHistory = [];
+        }
+
+        function closeCatGallery() { 
+            document.getElementById('catGalleryContainer').style.display = 'none'; 
+        }
+
+        function changeCatSlide(dir) { 
+            catSlides[currentCatSlide].classList.remove('active'); 
+
+            if (dir > 0) {
+                // НАЖАЛИ ВПЕРЕД (❯): запоминаем текущего котика и ищем случайного нового
+                catGalleryHistory.push(currentCatSlide);
+                
+                if (catSlides.length > 1) {
+                    let nextCatSlide;
+                    do {
+                        nextCatSlide = Math.floor(Math.random() * catSlides.length);
+                    } while (nextCatSlide === currentCatSlide);
+                    currentCatSlide = nextCatSlide;
+                }
+            } else {
+                // НАЖАЛИ НАЗАД (❮): возвращаем котика, который был до этого
+                if (catGalleryHistory.length > 0) {
+                    currentCatSlide = catGalleryHistory.pop();
+                } else {
+                    currentCatSlide = (currentCatSlide - 1 + catSlides.length) % catSlides.length;
+                }
+            }
+
+            catSlides[currentCatSlide].classList.add('active'); 
+        }
+
 </script>
 
 </body>
