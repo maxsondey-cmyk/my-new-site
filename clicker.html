@@ -50,12 +50,6 @@
             <p style="font-size:0.85rem; color:#888; margin-bottom:8px;">Стоимость: 10 000 clicks</p>
             <button id="buyRingBtn" class="buy-btn" onclick="buyItem(10000, 'ring')">Купить Колечко</button>
         </div>
-        <div class="shop-box">
-            <div class="shop-title">Подарок: «Мишка» 🧸</div>
-            <p style="font-size:0.85rem; color: #888; margin-bottom:8px;">Стоимость: 20 000 clicks</p>
-            <button id="buyBigBearBtn" class="buy-btn" onclick="buyItem(20, 'bear2')">Купить Мишку</button>
-        </div>
-
     </div>
 
     <button class="back-btn" onclick="location.href='index.html'">↩ Назад к таймеру</button>
@@ -74,11 +68,6 @@
             let ringBtn = document.getElementById('buyRingBtn');
             if (clicks >= 10000) { ringBtn.classList.add('available'); } 
             else { ringBtn.classList.remove('available'); }
-
-            let bigBearBtn = document.getElementById('buyBigBearBtn');
-            if (clicks >= 20) { bigBearBtn.classList.add('available'); }
-            else { bigBearBtn.classList.remove('available'); }
-
         }
         
         checkButtons();
@@ -100,13 +89,10 @@
             
             if (itemType === 'bear') {
                 messageText = '🎉 Твоя девушка накопила 5000 кликов и купила Мишку! 🧸';
-                successAlert = 'Скоро придёт)!';
+                successAlert = 'Покупка совершена! Мишка успешно отправлен любимому! 🧸❤️';
             } else if (itemType === 'ring') {
-                messageText = 'Молодчинка аж 10к кликов)! так держать';
+                messageText = '💖 ВАУ! Твоя девушка накопила аж 10000 кликов и выбрала Колечко! 💍✨';
                 successAlert = 'Ого! Колечко заказано, уведомление уже летит к любимому! 💍💕';
-            } else if (itemType === 'ring') {
-                messageText = '💖 ВАУ! Твоя девушка накопила аж 25000 кликов и выбрала Колечко! 💍✨';
-                successAlert = 'хахах) накопила оке)!';
             }
             
             var encodedText = encodeURIComponent(messageText);
