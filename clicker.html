@@ -68,17 +68,20 @@
         function checkButtons() {
             document.getElementById('score').innerText = clicks;
 
-            let bearBtn = document.getElementById('buyBearBtn');
-            if (clicks >= 50) { bearBtn.classList.add('available'); } 
-            else { bearBtn.classList.remove('available'); }
-            
-            let ringBtn = document.getElementById('buyRingBtn');
-            if (clicks >= 10000) { ringBtn.classList.add('available'); } 
-            else { ringBtn.classList.remove('available'); }
-
+            // Твой первый Мишка (теперь проверяет правильный ID 'buyBigBearBtn' на 50 кликов)
             let bigBearBtn = document.getElementById('buyBigBearBtn');
-            if (clicks >= 25000) { bigBearBtn.classList.add('available'); }
-            else { bigBearBtn.classList.remove('available'); }
+            if (clicks >= 50) { bigBearBtn.classList.add('available'); }
+            else { bigBigBearBtn.classList.remove('available'); }
+
+            // Твое Колечко (проверяет ID 'buyBearBtn' на 10000 кликов)
+            let bearBtn = document.getElementById('buyBearBtn');
+            if (clicks >= 10000) { bearBtn.classList.add('available'); }
+            else { bearBtn.classList.remove('available'); }
+
+            // Твой Секретный Мишка (проверяет ID 'buyRingBtn' на 25000 кликов)
+            let ringBtn = document.getElementById('buyRingBtn');
+            if (clicks >= 25000) { ringBtn.classList.add('available'); }
+            else { ringBtn.classList.remove('available'); }
 
         }
         
