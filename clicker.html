@@ -9,7 +9,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: 'Comfortaa', cursive, sans-serif; background: linear-gradient(135deg, #ffeef2 0%, #ffd6e0 100%); color: #4a4a4a; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
         .score-board { font-size: 2.2rem; font-weight: bold; color: #ff3366; margin-bottom: 15px; text-align: center; }
-        .duck-btn { width: 200px; height: 200px; cursor: pointer; transition: transform 0.1s ease; user-select: none; -webkit-user-drag: none; margin: 10px 0; }
+        .duck-btn { width: 200px; height: 200px; cursor: pointer; transition: transform 0.1s ease; user-select: none; -webkit-user-drag: none; margin: 10px 0; touch-action: manipulation; }
         .duck-btn:active { transform: scale(0.9); }
         
         .shop-container { display: flex; flex-direction: column; gap: 15px; width: 90%; max-width: 350px; margin-top: 20px; }
@@ -41,20 +41,20 @@
     <div class="shop-container">
         <div class="shop-box">
             <div class="shop-title">Подарок: «Мишка» 🧸</div>
-            <p style="font-size:0.85rem; color: #888; margin-bottom:8px;">Стоимость: 5000 clicks</p>
-            <button id="buyBigBearBtn" class="buy-btn" onclick="buyItem(5000, 'bear')">Купить Мишку</button>
+            <p style="font-size:0.85rem; color: #888; margin-bottom:8px;">Стоимость: 50 clicks</p>
+            <button id="buyBigBearBtn" class="buy-btn" onclick="buyItem(50, 'bear')">Купить Мишку</button>
         </div>
 
         <div class="shop-box">
             <div class="shop-title">Подарок: «Колечко» 💍</div>
             <p style="font-size:0.85rem; color:#888; margin-bottom:8px;">Стоимость: 10 000 clicks</p>
-            <button id="buyBearBtn" class="buy-btn" onclick="buyItem(10000, 'ring')">Купить Мишку</button>
+            <button id="buyBearBtn" class="buy-btn" onclick="buyItem(10000, 'ring')">Купить колечко</button>
         </div>
 
         <div class="shop-box">
             <div class="shop-title">Секретный подарок: «Мишка.??» 🧸</div>
             <p style="font-size:0.85rem; color:#888; margin-bottom:8px;">Стоимость: 25 000 clicks</p>
-            <button id="buyRingBtn" class="buy-btn" onclick="buyItem(25000, 'bear2')">Купить Колечко</button>
+            <button id="buyRingBtn" class="buy-btn" onclick="buyItem(25000, 'bear2')">Купить мишку..?</button>
         </div>
 
     </div>
@@ -69,7 +69,7 @@
             document.getElementById('score').innerText = clicks;
 
             let bearBtn = document.getElementById('buyBearBtn');
-            if (clicks >= 5000) { bearBtn.classList.add('available'); } 
+            if (clicks >= 50) { bearBtn.classList.add('available'); } 
             else { bearBtn.classList.remove('available'); }
             
             let ringBtn = document.getElementById('buyRingBtn');
